@@ -29,7 +29,7 @@ After successful login, the user is redirected to a welcome page confirming auth
 
 ## Tech Stack
 
-- Python 3.9+
+- Python 3.11+
 - FastAPI
 - Uvicorn
 - Jinja2 Templates
@@ -114,7 +114,7 @@ This application is designed to be used as part of a **secure DevOps capstone pr
   - SAST
   - Dependency scanning
   - Secrets scanning
-- Connect the app to a PostgreSQL database (Amazon RDS)
+- Connect the app to a PostgreSQL database (IaaS)
 
 ---
 
