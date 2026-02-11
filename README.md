@@ -43,13 +43,12 @@ After successful login, the user is redirected to a welcome page confirming auth
 .
 ├── app
 │   ├── main.py
-│   ├── auth.py
 │   ├── templates
 │   │   ├── login.html
 ├── requirements.txt
 ├── README.md
 └── docs
-    └── app.png
+    └── 1.png
 ```
 
 ---
@@ -58,8 +57,8 @@ After successful login, the user is redirected to a welcome page confirming auth
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-org/techbleat-fastapi-demo.git
-cd techbleat-fastapi-demo
+git clone https://github.com/techbleat/class25-26-project2.git
+cd class25-26-project2
 ```
 
 ### 2. Create and activate a virtual environment
