@@ -126,33 +126,33 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/ec2.pem ec2-user@${{ env.BASTION_IP }} "echo 'SSH connection to Bastion successful!'"
 
-    #   # Install Ansible
-    #   - name: Install Ansible
-    #     run: sudo apt update && sudo apt install -y ansible
+    # #   # Install Ansible
+    # #   - name: Install Ansible
+    # #     run: sudo apt update && sudo apt install -y ansible
 
-    #   - name: Ensure python3-apt exists
-    #     run:  sudo apt-get update && sudo apt-get install -y python3-apt
+    # #   - name: Ensure python3-apt exists
+    # #     run:  sudo apt-get update && sudo apt-get install -y python3-apt
 
-    #   # Wait for servers to be ready
-    #   - name: Wait for servers
-    #     run: sleep 60
+    # #   # Wait for servers to be ready
+    # #   - name: Wait for servers
+    # #     run: sleep 60
 
-      # # Setup Python for Ansible
-      # - name: Setup Python
-      #   uses: actions/setup-python@v5
-      #   with:
-      #     python-version: '3.11'
+    #   # # Setup Python for Ansible
+    #   # - name: Setup Python
+    #   #   uses: actions/setup-python@v5
+    #   #   with:
+    #   #     python-version: '3.11'
 
-      # # Run Ansible OS Hardening
-      # - name: Run Ansible OS Hardening
-      #   run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i terraform/inventory.ini ansible/ansible-playbook.yml
+    #   # # Run Ansible OS Hardening
+    #   # - name: Run Ansible OS Hardening
+    #   #   run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i terraform/inventory.ini ansible/ansible-playbook.yml
 
-      # Deploy Application
+    # Deploy Application
 
-    #   - name: Install Ansible
-    #     run: |
-    #       python3 -m pip install --upgrade pip
-    #       pip install ansible
+      - name: Install Ansible
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install ansible
 
       - name: Run Ansible Deploy
-        run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i terraform/inventory.ini ansible/ansible-playbook.yml
+        run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.ini ansible/ansible-playbook.yml
