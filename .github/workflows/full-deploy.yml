@@ -61,7 +61,7 @@ jobs:
       - name: Terraform validate
         working-directory: terraform
         run: terraform validate
-        
+
       - name: Terraform Init
         working-directory: terraform
         run: terraform init -reconfigure
@@ -101,7 +101,23 @@ jobs:
           echo "${{ secrets.AWS_SSH_KEY }}" > ~/.ssh/ec2.pem
           chmod 400 ~/.ssh/ec2.pem
 
-      # Create Ansible Inventory dynamically
+      # # Create Ansible Inventory dynamically
+      # - name: Create Ansible Inventory
+      #   run: |
+      #     cat <<EOF > terraform/inventory.ini
+      #     [bastion]
+      #     ${{ env.BASTION_IP }} ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/ec2.pem
+
+      #     [app_servers]
+      #     ${{ env.APP_IP }} ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/ec2.pem ansible_ssh_common_args='-o ProxyJump=ec2-user@${{ env.BASTION_IP }}'
+
+      #     [db]
+      #     ${{ env.DB_IP }} ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/ec2.pem
+      #     EOF
+
+      # -----------------------------
+      # Create Ansible Inventory
+      # -----------------------------
       - name: Create Ansible Inventory
         run: |
           cat <<EOF > terraform/inventory.ini
@@ -110,9 +126,6 @@ jobs:
 
           [app_servers]
           ${{ env.APP_IP }} ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/ec2.pem ansible_ssh_common_args='-o ProxyJump=ec2-user@${{ env.BASTION_IP }}'
-
-          [db]
-          ${{ env.DB_IP }} ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/ec2.pem
           EOF
 
       # Test SSH to Bastion
