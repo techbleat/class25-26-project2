@@ -1,26 +1,50 @@
+# ---
+# - name: Configure EC2 Servers
+#   hosts: app
+#   become: true
+
+#   tasks:
+
+#     - name: Check python3 version
+#       raw: python3 --version
+#       register: python_test
+
+#     - name: Display python version
+#       debug:
+#         msg: "Python version is {{ python_test.stdout }}"
+
+#     - name: Bootstrap apt dependency
+#       raw: sudo apt-get update -y && sudo apt-get install -y python3-apt
+
+#     - name: Update apt packages
+#       apt:
+#         update_cache: yes
+
+#     - name: Install required packages
+#       apt:
+#         name:
+#           - nginx
+#           - git
+#           - curl
+#         state: present
+
+#     - name: Start nginx
+#       service:
+#         name: nginx
+#         state: started
+#         enabled: yes
+
 ---
-- name: Configure EC2 Servers
-  hosts: app
+- name: Configure App Server
+  hosts: app_servers
   become: true
 
   tasks:
 
-    - name: Check python3 version
-      raw: python3 --version
-      register: python_test
-
-    - name: Display python version
-      debug:
-        msg: "Python version is {{ python_test.stdout }}"
-
-    - name: Bootstrap apt dependency
+    - name: Bootstrap python dependency
       raw: sudo apt-get update -y && sudo apt-get install -y python3-apt
 
-    - name: Update apt packages
-      apt:
-        update_cache: yes
-
-    - name: Install required packages
+    - name: Install packages
       apt:
         name:
           - nginx
