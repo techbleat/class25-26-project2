@@ -132,6 +132,10 @@ jobs:
       - name: Test SSH to Bastion
         run: ssh -o StrictHostKeyChecking=no -i ~/.ssh/ec2.pem ec2-user@${{ env.BASTION_IP }} "echo 'SSH connection to Bastion successful!'"
 
+      # Run Ansible OS Hardening
+      - name: Run Ansible OS Hardening
+        run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i terraform/inventory.ini ansible/ansible-playbook.yml
+      
       # Install Ansible
       - name: Install Ansible
         run: |
