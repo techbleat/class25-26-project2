@@ -1,0 +1,20 @@
+---
+- name: Ansible Deployment
+  hosts: bastion
+  become: true
+
+  tasks:
+
+    - name: Install packages
+      yum:
+        name:
+          - nginx
+          - git
+          - tree
+        state: present
+
+    - name: Start nginx
+      service:
+        name: nginx
+        state: started
+        enabled: true
