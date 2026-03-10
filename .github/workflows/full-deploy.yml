@@ -158,4 +158,4 @@ jobs:
         run: |
           export BASTION_IP=$(terraform output -raw bastion_node_ip)
           export APP_IP=$(terraform output -raw app_node_ip)
-          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.ini ansible/ansible-playbook.yml
+          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.sh ansible/ansible-playbook.yml
