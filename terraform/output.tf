@@ -1,18 +1,18 @@
-# Bastion Public IP
-output "bastion_public_ip" {
-  description = "Public IP of Bastion server"
+# Bastion public IP
+output "bastion_node_ip" {
+  description = "Public IP of the Bastion server"
   value       = aws_instance.bastion.public_ip
 }
 
-# App Server Private IP
-output "app_private_ip" {
-  description = "Private IP of App server"
+# App server private IP
+output "app_node_ip" {
+  description = "Private IP of the App server"
   value       = aws_instance.app.private_ip
 }
 
-# PostgreSQL RDS Endpoint
-output "db_endpoint" {
-  description = "PostgreSQL RDS endpoint"
+# RDS Postgres endpoint
+output "db_node_ip" {
+  description = "RDS Postgres endpoint"
   value       = aws_db_instance.postgres.endpoint
 }
 
