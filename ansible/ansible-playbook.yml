@@ -1,26 +1,50 @@
+# # ---
+# # - name: Configure EC2 Servers
+# #   hosts: app
+# #   become: true
+
+# #   tasks:
+
+# #     - name: Check python3 version
+# #       raw: python3 --version
+# #       register: python_test
+
+# #     - name: Display python version
+# #       debug:
+# #         msg: "Python version is {{ python_test.stdout }}"
+
+# #     - name: Bootstrap apt dependency
+# #       raw: sudo apt-get update -y && sudo apt-get install -y python3-apt
+
+# #     - name: Update apt packages
+# #       apt:
+# #         update_cache: yes
+
+# #     - name: Install required packages
+# #       apt:
+# #         name:
+# #           - nginx
+# #           - git
+# #           - curl
+# #         state: present
+
+# #     - name: Start nginx
+# #       service:
+# #         name: nginx
+# #         state: started
+# #         enabled: yes
+
 # ---
-# - name: Configure EC2 Servers
-#   hosts: app
+# - name: Configure App Server
+#   hosts: app_servers
 #   become: true
 
 #   tasks:
 
-#     - name: Check python3 version
-#       raw: python3 --version
-#       register: python_test
-
-#     - name: Display python version
-#       debug:
-#         msg: "Python version is {{ python_test.stdout }}"
-
-#     - name: Bootstrap apt dependency
+#     - name: Bootstrap python dependency
 #       raw: sudo apt-get update -y && sudo apt-get install -y python3-apt
 
-#     - name: Update apt packages
-#       apt:
-#         update_cache: yes
-
-#     - name: Install required packages
+#     - name: Install packages
 #       apt:
 #         name:
 #           - nginx
@@ -35,24 +59,77 @@
 #         enabled: yes
 
 ---
-- name: Configure App Server
-  hosts: app_servers
+- name: Configure Bastion and App Servers
+  hosts: all
   become: true
+  gather_facts: true
 
   tasks:
 
-    - name: Bootstrap python dependency
-      raw: sudo apt-get update -y && sudo apt-get install -y python3-apt
-
-    - name: Install packages
+    # -----------------------------
+    # Bastion server tasks
+    # -----------------------------
+    - name: Install Nginx on Bastion
+      when: "'bastion' in group_names"
       apt:
-        name:
-          - nginx
-          - git
-          - curl
+        name: nginx
+        update_cache: yes
         state: present
 
-    - name: Start nginx
+    - name: Configure reverse proxy on Bastion
+      when: "'bastion' in group_names"
+      copy:
+        dest: /etc/nginx/sites-available/app
+        content: |
+          server {
+              listen 80;
+              location / {
+                  proxy_pass http://{{ hostvars['app_servers'].inventory_hostname }};
+                  proxy_set_header Host $host;
+                  proxy_set_header X-Real-IP $remote_addr;
+              }
+          }
+
+    - name: Enable Nginx site
+      when: "'bastion' in group_names"
+      file:
+        src: /etc/nginx/sites-available/app
+        dest: /etc/nginx/sites-enabled/app
+        state: link
+
+    - name: Restart Nginx on Bastion
+      when: "'bastion' in group_names"
+      service:
+        name: nginx
+        state: restarted
+
+    # -----------------------------
+    # App server tasks
+    # -----------------------------
+    - name: Update apt cache on App Server
+      when: "'app_servers' in group_names"
+      apt:
+        update_cache: yes
+
+    - name: Install required packages on App Server
+      when: "'app_servers' in group_names"
+      apt:
+        name:
+          - git
+          - curl
+          - python3
+          - python3-apt
+        state: present
+
+    - name: Start Nginx on App Server (if needed for app)
+      when: "'app_servers' in group_names"
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Ensure Nginx is running on App Server
+      when: "'app_servers' in group_names"
       service:
         name: nginx
         state: started
